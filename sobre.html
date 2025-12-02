@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sobre - StarPop</title>
+  <style>
+    :root {
+      --primary: #8a0c0c;
+      --bg: #000;
+      --card: #fff;
+      --muted: #000;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Inter, system-ui, Arial;
+      margin: 0;
+      background: var(--bg);
+      color: #fff;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: linear-gradient(90deg, #800505, #000);
+      flex-wrap: wrap;
+    }
+
+    .logo { height: 100px; }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-grow: 1;
+      justify-content: center;
+      max-width: 500px;
+    }
+
+    .search-container input {
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid #661717;
+      width: 100%;
+    }
+
+    .search-container button {
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      background: #8a0c0c;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #fff;
+    }
+
+    .menu-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background: #ffffff;
+      padding: 12px 0;
+      border-bottom: 4px solid #6b0808;
+    }
+
+    .menu-bar a {
+      color: #9b1818;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .menu-bar a:hover { color: #ff6666; }
+
+    main {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+
+    .hero {
+      background: #fff;
+      color: #000;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      line-height: 1.7;
+    }
+
+    .hero h2 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .garage {
+      background: #f9f9f9;
+      border-left: 5px solid var(--primary);
+      padding: 12px 18px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    /* ===== Carrinho ===== */
+    .cart-side {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      width: 360px;
+      background: var(--card);
+      color: #000;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+      transform: translateX(110%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .cart-side.open { transform: translateX(0); }
+
+    .cart-header {
+      padding: 18px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cart-body {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #000;
+    }
+
+    .cart-item img {
+      width: 60px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    footer {
+      padding: 18px;
+      text-align: center;
+      color: #aaa;
+      margin-top: 40px;
+    }
+
+    /* ===== Modal Login/Cadastro ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      color: #000;
+      padding: 24px;
+      border-radius: 10px;
+      width: 320px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 14px;
+    }
+
+    .tabs button {
+      flex: 1;
+      background: #ddd;
+      border-radius: 0;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .tabs button.active { background: #8a0c0c; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="starr.png" class="logo" alt="Logo da Loja" />
+    <form class="search-container" id="searchForm">
+      <input type="text" id="searchInput" placeholder="O que você está buscando?" />
+      <button type="submit">🔍</button>
+    </form>
+    <nav>
+      <button id="open-auth" class="ghost">Entrar / Cadastrar</button>
+      <button id="open-cart" aria-label="Abrir carrinho">🛒</button>
+    </nav>
+  </header>
+
+  <div class="menu-bar">
+    <a href="vectura.html">Início</a>
+    <a href="Cantores.html">Cantores</a>
+    <a href="contato.html">Contato</a>
+    <a href="sobre.html">Sobre</a>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="card story">
+        <h2>Nossa História</h2>
+        <p>Tudo começou de forma simples — em uma pequena venda de garagem. Entre caixas, tecidos e algumas camisetas personalizadas à mão, nasceu um sonho: <strong>levar o estilo dos maiores nomes do pop para o mundo inteiro</strong>.</p>
+
+        <p>Naquela época, era apenas uma ideia ousada — transformar o amor pela música e pela moda em algo que todo fã pudesse vestir. As primeiras peças foram criadas com inspiração direta nos figurinos icônicos de shows, clipes e tapetes vermelhos. Cada roupa carregava um toque de palco, um brilho de holofote e muita atitude.</p>
+
+        <div class="garage">
+          <strong>A venda de garagem:</strong>
+          <p>Foi ali, entre mesas dobráveis e uma caixa de luzes pisca-pisca, que os primeiros clientes encontraram algo diferente — peças cheias de personalidade e histórias. O boca a boca fez o resto.</p>
+        </div>
+
+        <p>O sucesso da pequena venda foi o primeiro passo. Logo, as encomendas começaram a vir de outros estados, depois de outros países. E assim, o que começou na garagem de casa se transformou em <strong>um movimento global de moda pop</strong>.</p>
+
+        <p>Hoje, nosso site é o ponto de encontro de quem vive a música, respira estilo e acredita que vestir-se também é uma forma de expressão. De fãs para fãs — <strong>levamos o ritmo do pop para todos os cantos do planeta</strong>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Carrinho -->
+  <aside id="cart" class="cart-side">
+    <div class="cart-header">
+      <strong>Carrinho</strong>
+      <button id="close-cart">Fechar</button>
+    </div>
+    <div class="cart-body" id="cart-items"></div>
+    <div style="padding:16px;border-top:1px solid #000">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span>Total:</span> <strong id="cart-total">R$ 0,00</strong>
+      </div>
+      <button id="checkout-btn" style="width:100%">Finalizar Compra</button>
+    </div>
+  </aside>
+
+  <!-- Modal Login -->
+  <div class="overlay" id="auth">
+    <div class="modal">
+      <div class="tabs">
+        <button id="tab-login" class="active">Entrar</button>
+        <button id="tab-register">Cadastrar</button>
+      </div>
+      <div id="login-form">
+        <input id="login-email" type="email" placeholder="Email" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="login-pass" type="password" placeholder="Senha" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <button id="btn-login" style="width:100%">Entrar</button>
+      </div>
+      <div id="register-form" style="display:none">
+        <input id="reg-name" placeholder="Nome" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="reg-email" type="email" placeholder="Email" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="reg-pass" type="password" placeholder="Senha" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <button id="btn-register" style="width:100%">Cadastrar</button>
+      </div>
+      <button id="close-auth" class="ghost" style="margin-top:10px;width:100%">Fechar</button>
+    </div>
+  </div>
+
+  <footer>© StarPop - 2025. Todos os direitos reservados.</footer>
+
+  <script>
+    const q = s => document.querySelector(s);
+    const formatR = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+
+    // ==== CARRINHO ====
+    const CART_KEY = 'demo_cart_v2';
+    let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+    function removeFromCart(id){ delete cart[id]; saveCart(); }
+
+    const cartSide = q('#cart'), cartItemsEl = q('#cart-items'), cartTotalEl = q('#cart-total');
+    function updateCartUI(){
+      const items = Object.values(cart);
+      cartItemsEl.innerHTML = items.length
+        ? items.map(it=>`
+          <div class="cart-item" data-id="${it.id}">
+            <img src="${it.src || 'default.jpg'}" alt="${it.title || 'Produto'}"/>
+            <div style="flex:1">
+              <div style="font-weight:600">${it.title || 'Produto sem nome'}</div>
+              <div>${formatR(it.price || 0)} x ${it.qty || 1}</div>
+            </div>
+            <button data-id="${it.id}" class="ghost rm">Remover</button>
+          </div>`).join('')
+        : '<div style="text-align:center;color:#555">Seu carrinho está vazio.</div>';
+      const total = items.reduce((s,i)=>s + (i.price||0) * (i.qty||1), 0);
+      cartTotalEl.textContent = formatR(total);
+      cartItemsEl.querySelectorAll('.rm').forEach(b=>b.onclick=e=>removeFromCart(e.target.dataset.id));
+    }
+
+    q('#open-cart').onclick=()=>cartSide.classList.add('open');
+    q('#close-cart').onclick=()=>cartSide.classList.remove('open');
+    q('#checkout-btn').onclick=()=>{ if(Object.keys(cart).length===0){ alert('Carrinho vazio.'); return; } cart={}; saveCart(); alert('Compra finalizada!'); cartSide.classList.remove('open'); };
+
+    // ==== LOGIN / CADASTRO ====
+    const overlay = q('#auth');
+    const usersKey = 'demo_users';
+    const getUsers = () => JSON.parse(localStorage.getItem(usersKey)||'{}');
+    const saveUsers = u => localStorage.setItem(usersKey, JSON.stringify(u));
+
+    q('#open-auth').onclick=()=>overlay.classList.add('open');
+    q('#close-auth').onclick=()=>overlay.classList.remove('open');
+
+    const tabLogin=q('#tab-login'),tabRegister=q('#tab-register'),loginForm=q('#login-form'),regForm=q('#register-form');
+    tabLogin.onclick=()=>{tabLogin.classList.add('active');tabRegister.classList.remove('active');loginForm.style.display='block';regForm.style.display='none';};
+    tabRegister.onclick=()=>{tabRegister.classList.add('active');tabLogin.classList.remove('active');loginForm.style.display='none';regForm.style.display='block';};
+
+    q('#btn-register').onclick=()=>{
+      const name=q('#reg-name').value.trim(),email=q('#reg-email').value.trim(),pass=q('#reg-pass').value;
+      if(!name||!email||!pass) return alert('Preencha todos os campos!');
+      const users=getUsers();
+      if(users[email]) return alert('Email já cadastrado!');
+      users[email]={name,pass};
+      saveUsers(users);
+      alert('Cadastro realizado!');
+      tabLogin.click();
+    };
+
+    q('#btn-login').onclick=()=>{
+      const email=q('#login-email').value.trim(),pass=q('#login-pass').value;
+      const users=getUsers();
+      if(users[email]?.pass===pass){ alert(`Bem-vindo, ${users[email].name}!`); overlay.classList.remove('open'); }
+      else alert('Email ou senha incorretos.');
+    };
+
+    updateCartUI();
+  </script>
+</body>
+</html>

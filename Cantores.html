@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cantores - Loja</title>
+  <style>
+    :root {
+      --primary: #8a0c0c;
+      --bg: #000;
+      --card: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Inter, system-ui, Arial;
+      margin: 0;
+      background: var(--bg);
+      color: #fff;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: linear-gradient(90deg, #740505, #000);
+      flex-wrap: wrap;
+    }
+    .logo { height: 100px; }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-grow: 1;
+      justify-content: center;
+      max-width: 500px;
+    }
+
+    .search-container input {
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid #661717;
+      width: 100%;
+    }
+
+    .search-container button {
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      background: #8a0c0c;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #fff;
+    }
+
+    .menu-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background: #fffefe;
+      padding: 12px 0;
+      border-bottom: 4px solid #8a0c0c;
+    }
+
+    .menu-bar a {
+      color: #971e1e;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .menu-bar a:hover { color: #ff6666; }
+
+    .artist-section {
+      margin: 40px auto;
+      max-width: 1100px;
+    }
+
+    .artist-banner {
+      width: 100%;
+      height: 220px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      color: #000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card img {
+      height: 230px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .price { font-weight: 700; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .cart-side {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      width: 360px;
+      background: var(--card);
+      color: #000;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+      transform: translateX(110%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+    .cart-side.open { transform: translateX(0); }
+
+    .cart-header {
+      padding: 18px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cart-body {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #000;
+    }
+
+    .cart-item img {
+      width: 60px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    footer {
+      padding: 18px;
+      text-align: center;
+      color: #aaa;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      color: #000;
+      padding: 24px;
+      border-radius: 10px;
+      width: 320px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 14px;
+    }
+    .tabs button {
+      flex: 1;
+      background: #ddd;
+      border-radius: 0;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .tabs button.active { background: #8a0c0c; color: #fff; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <img src="starr.png" class="logo" alt="Logo da Loja" />
+    <form class="search-container" id="searchForm">
+      <input type="text" id="searchInput" placeholder="O que você está buscando?" />
+      <button type="submit">🔍</button>
+    </form>
+    <nav>
+      <button id="open-auth" class="ghost">Entrar / Cadastrar</button>
+      <button id="open-cart">🛒</button>
+    </nav>
+  </header>
+
+  <div class="menu-bar">
+    <a href="vectura.html">Início</a>
+    <a href="Cantores.html">Cantores</a>
+    <a href="contato.html">Contato</a>
+    <a href="sobre.html">Sobre</a>
+  </div>
+
+  <main>
+    <div id="artists"></div>
+  </main>
+
+  <aside id="cart" class="cart-side">
+    <div class="cart-header">
+      <strong>Carrinho</strong>
+      <button id="close-cart">Fechar</button>
+    </div>
+    <div class="cart-body" id="cart-items"></div>
+    <div style="padding:16px;border-top:1px solid #000">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span>Total:</span> <strong id="cart-total">R$ 0,00</strong>
+      </div>
+      <button id="checkout-btn" style="width:100%">Finalizar Compra</button>
+    </div>
+  </aside>
+
+  <div class="overlay" id="auth">
+    <div class="modal">
+      <div class="tabs">
+        <button id="tab-login" class="active">Entrar</button>
+        <button id="tab-register">Cadastrar</button>
+      </div>
+      <div id="login-form">
+        <input id="login-email" type="email" placeholder="Email" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="login-pass" type="password" placeholder="Senha" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <button id="btn-login" style="width:100%">Entrar</button>
+      </div>
+      <div id="register-form" style="display:none">
+        <input id="reg-name" placeholder="Nome" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="reg-email" type="email" placeholder="Email" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="reg-pass" type="password" placeholder="Senha" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <button id="btn-register" style="width:100%">Cadastrar</button>
+      </div>
+      <button id="close-auth" class="ghost" style="margin-top:10px;width:100%">Fechar</button>
+    </div>
+  </div>
+
+  <footer>© StarPop - 2025. Todos os direitos reservados</footer>
+
+  <script>
+    const q = s => document.querySelector(s);
+    const formatR = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+  
+    // === 8 CANTORES COM 8 PRODUTOS CADA ===
+    const cantores = [
+      { nome: 'Jão', banner: 'bannerjao.jpg', produtos: [
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jao.jpg'},
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jao9.jpg'},
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jao3.jpg'},
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jaoo.jpg'},
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jao5.jpg'},
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jao6.jpg'},
+        {titulo:'Regata Jão', preco:59.9, imagem:'regatajao.jpg'},
+        {titulo:'Camiseta Jão', preco:89.9, imagem:'jaopirata.jpg'}
+      ]},
+      { nome: 'Lady Gaga', banner: 'bannergaga.jpg', produtos: [
+        {titulo:'Camiseta Lady Gaga', preco:89.9, imagem:'gaga.jpg'},
+        {titulo:'Moletom Lady Gaga', preco:199.9, imagem:'gaga1.jpg'},
+        {titulo:'Regata Lady Gaga', preco:59.9, imagem:'gaga2.jpg'},
+        {titulo:'Camiseta Lady Gaga', preco:89.9, imagem:'gaga3.jpg'},
+        {titulo:'Camiseta Lady Gaga', preco:89.9, imagem:'gaga4.jpg'},
+        {titulo:'Camiseta Lady Gaga', preco:89.9, imagem:'gaga5.jpg'},
+        {titulo:'Baby Tee Lady Gaga', preco:79.9, imagem:'gaga6.jpg'},
+        {titulo:'Camiseta Lady Gaga', preco:59.9, imagem:'gaga7.jpg'}
+      ]},
+      { nome: 'Taylor Swift', banner: 'taylorb.webp', produtos: [
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor.jpg'},
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor1.jpg'},
+        {titulo:'Cropped Taylor Swift ', preco:79.9, imagem:'taylor2.jpg'},
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor6.jpg'},
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor10.jpg'},
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor7.jpg'},
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor8.jpg'},
+        {titulo:'Camiseta Taylor Swift', preco:89.9, imagem:'taylor9.jpg'}
+      ]},
+      { nome: 'Sabrina Carpenter', banner: 'bannersabrina.webp', produtos: [
+        {titulo:'Moletom Sabrina Carpenter', preco:199.9, imagem:'sabrina1.jpg'},
+        {titulo:'Camiseta Sabrina Carpenter', preco:89.9, imagem:'sabrina2.jpg'},
+        {titulo:'Camiseta Sabrina Carpenter', preco:89.9, imagem:'sabrina3.jpg'},
+        {titulo:'Camiseta Sabrina Carpenter', preco:89.9, imagem:'sabrina4.jpg'},
+        {titulo:'Baby Tee Sabrina Carpenter', preco:79.9, imagem:'sabrina5.jpg'},
+        {titulo:'Camiseta Sabrina Carpenter', preco:89.9, imagem:'sabrina6.jpg'},
+        {titulo:'Baby Tee Sabrina Carpenter', preco:79.9, imagem:'sabrina7.jpg'},
+        {titulo:'Camiseta Sabrina Carpenter', preco:89.9, imagem:'sabrina.jpg'}
+      ]},
+      { nome: 'Lana Del Rey', banner: 'bannerlana.png', produtos: [
+        {titulo:'Moletom Lana Del Rey', preco:199.9, imagem:'lana1.jpg'},
+        {titulo:'Camiseta Lana Del Rey', preco:89.9, imagem:'lana2.jpg'},
+        {titulo:'Camiseta Lana Del Rey', preco:89.9, imagem:'lana3.jpg'},
+        {titulo:'Camiseta Lana Del Rey', preco:89.9, imagem:'lana4.jpg'},
+        {titulo:'Baby Tee Lana Del Rey', preco:79.9, imagem:'lana5.jpg'},
+        {titulo:'Camiseta Lana Del Rey', preco:89.9, imagem:'lana6.jpg'},
+        {titulo:'Cropped Lana Del Rey', preco:79.9, imagem:'lana7.jpg'},
+        {titulo:'Cropped Lana Del Rey', preco:79.9, imagem:'lana.jpg'}
+      ]},
+      { nome: 'Billie Eilish', banner: 'bannerbilliee.webp', produtos: [
+        {titulo:'Moletom Billie Eilish', preco:199.9, imagem:'billie1.jpg'},
+        {titulo:'Camiseta Billie Eilish', preco:89.9, imagem:'billie2.jpg'},
+        {titulo: 'Moletom Billie Eilish', preco:199.9, imagem:'billie3.jpg'},
+        {titulo:'Camiseta Billie Eilish', preco:89.9, imagem:'billie4.jpg'},
+        {titulo:'Camiseta Billie Eilish', preco:89.9, imagem:'billie5.jpg'},
+        {titulo:'Camiseta Billie Eilish', preco:89.9, imagem:'billie6.jpg'},
+        {titulo:'Camiseta Billie Eilish', preco:89.9, imagem:'billie7.jpg'},
+        {titulo:'Cropped Billie Eilish', preco:79.9, imagem:'billie.jpg'}
+      ]},
+      { nome: 'Justin Bieber', banner: 'BieberBanner.png', produtos: [
+        {titulo:'Cropped Justin Bieber', preco:79.9, imagem:'justin3.png'},
+        {titulo:'Camiseta Justin Bieber', preco:89.9, imagem:'justin.png'},
+        {titulo:'Camiseta Justin Bieber', preco:89.9, imagem:'justin6.png'},
+        {titulo:'Camiseta Justin Bieber', preco:89.9, imagem:'justin7.jpg'},
+        {titulo:'Camiseta Justin Bieber', preco:89.9, imagem:'justin8.jpg'},
+        {titulo:'Camiseta Justin Bieber', preco:89.9, imagem:'justin9.jpg'},
+        {titulo:'Camiseta Justin Bieber', preco:89.9, imagem:'justin10.jpg'},
+        {titulo:'Moletom Justin Bieber', preco:199.9, imagem:'justin11.jpg'}
+      ]},
+      { nome: 'Ariana Grande', banner: 'bannerariana.jpg', produtos: [
+        {titulo:'Cropped Ariana Grande', preco:79.9, imagem:'ariana1.jpg'},
+        {titulo:'Camiseta Ariana Grande', preco:89.9, imagem:'ariana2.jpg'},
+        {titulo:'Camiseta Ariana Grande', preco:89.9, imagem:'ariana3.jpg'},
+        {titulo:'Moletom Ariana Grande', preco:199.9, imagem:'ariana4.jpg'},
+        {titulo:'Camiseta Ariana Grande', preco:89.9, imagem:'ariana.jpg'},
+        {titulo:'Camiseta Ariana Grande', preco:89.9, imagem:'arianag.jpg'},
+        {titulo:'Camiseta Ariana Grande', preco:89.9, imagem:'gui10.jpg'},
+        {titulo:'Camiseta Ariana Grande', preco:89.9, imagem:'gui11.jpg'}
+      ]}
+    ];
+  
+    const artistsEl = q('#artists');
+  
+    // ====== RENDERIZAR PRODUTOS ======
+    function renderProducts(filter = '') {
+      artistsEl.innerHTML = '';
+      cantores.forEach(c => {
+        const produtosFiltrados = c.produtos.filter(p =>
+          p.titulo.toLowerCase().includes(filter.toLowerCase())
+        );
+        if (produtosFiltrados.length === 0) return;
+        const section = document.createElement('section');
+        section.className = 'artist-section';
+        section.innerHTML = `
+          <div class="artist-banner" style="background-image:url('${c.banner}')">${c.nome}</div>
+          <div class="grid">
+            ${produtosFiltrados.map(p => `
+              <article class="card">
+                <img src="${p.imagem}" alt="${p.titulo}" />
+                <div style="margin-top:10px;font-weight:800">${p.titulo}</div>
+                <div class="meta">
+                  <div class="price">${formatR(p.preco)}</div>
+                  <div class="small">Em estoque</div>
+                </div>
+                <div class="actions">
+                  <button class="add" data-prod='${JSON.stringify(p)}'>Adicionar</button>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        `;
+        artistsEl.appendChild(section);
+      });
+    }
+  
+    renderProducts();
+  
+    // ====== PESQUISA ======
+    q('#searchForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const termo = q('#searchInput').value.trim();
+      renderProducts(termo);
+    });
+  
+    // ====== CARRINHO ======
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  
+    function salvarCarrinho() {
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      renderCarrinho();
+    }
+  
+    function renderCarrinho() {
+      const cont = q('#cart-items');
+      if (!cont) return;
+      cont.innerHTML = '';
+      let total = 0;
+      carrinho.forEach((item, i) => {
+        total += item.preco;
+        cont.innerHTML += `
+          <div class="cart-item">
+            <img src="${item.imagem}" />
+            <div style="flex:1">
+              <div>${item.titulo}</div>
+              <div>${formatR(item.preco)}</div>
+            </div>
+            <button data-i="${i}" class="remove">🗑️</button>
+          </div>
+        `;
+      });
+      q('#cart-total').textContent = formatR(total);
+      const count = q('#cart-count');
+      if (count) count.textContent = carrinho.length;
+    }
+  
+    document.body.addEventListener('click', e => {
+      if (e.target.classList.contains('add')) {
+        const prod = JSON.parse(e.target.dataset.prod);
+        carrinho.push(prod);
+        salvarCarrinho();
+        alert(`${prod.titulo} foi adicionado ao carrinho!`);
+      }
+  
+      if (e.target.classList.contains('remove')) {
+        const i = e.target.dataset.i;
+        carrinho.splice(i, 1);
+        salvarCarrinho();
+      }
+    });
+  
+    q('#open-cart')?.addEventListener('click', () => q('#cart').classList.add('open'));
+    q('#close-cart')?.addEventListener('click', () => q('#cart').classList.remove('open'));
+  
+    renderCarrinho();
+  
+    // ====== LOGIN / CADASTRO / LOGOUT ======
+    const overlay = q('#auth');
+    q('#open-auth')?.addEventListener('click', () => overlay.classList.add('open'));
+    q('#close-auth')?.addEventListener('click', () => overlay.classList.remove('open'));
+  
+    q('#tab-login')?.addEventListener('click', () => {
+      q('#tab-login').classList.add('active');
+      q('#tab-register').classList.remove('active');
+      q('#login-form').style.display = 'block';
+      q('#register-form').style.display = 'none';
+    });
+  
+    q('#tab-register')?.addEventListener('click', () => {
+      q('#tab-register').classList.add('active');
+      q('#tab-login').classList.remove('active');
+      q('#register-form').style.display = 'block';
+      q('#login-form').style.display = 'none';
+    });
+  
+    // cadastro
+    q('#btn-register')?.addEventListener('click', () => {
+      const nome = q('#reg-name').value.trim();
+      const email = q('#reg-email').value.trim();
+      const pass = q('#reg-pass').value.trim();
+      if (!nome || !email || !pass) return alert('Preencha todos os campos!');
+      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      if (usuarios.some(u => u.email === email)) return alert('Email já cadastrado!');
+      usuarios.push({ nome, email, pass });
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      alert('Cadastro realizado com sucesso!');
+      q('#tab-login').click();
+    });
+  
+    // login
+    q('#btn-login')?.addEventListener('click', () => {
+      const email = q('#login-email').value.trim();
+      const pass = q('#login-pass').value.trim();
+      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      const user = usuarios.find(u => u.email === email && u.pass === pass);
+      if (!user) return alert('Usuário ou senha inválidos');
+      localStorage.setItem('logado', JSON.stringify(user));
+      overlay.classList.remove('open');
+      q('#open-auth').textContent = `Olá, ${user.nome}`;
+      q('#logout-btn').style.display = 'inline-block';
+    });
+  
+    // manter login
+    const logado = JSON.parse(localStorage.getItem('logado'));
+    if (logado) {
+      q('#open-auth').textContent = `Olá, ${logado.nome}`;
+      q('#logout-btn').style.display = 'inline-block';
+    }
+  
+    // logout
+    q('#logout-btn')?.addEventListener('click', () => {
+      localStorage.removeItem('logado');
+      q('#open-auth').textContent = 'Entrar / Cadastrar';
+      q('#logout-btn').style.display = 'none';
+    });
+  
+    // checkout
+    q('#checkout-btn')?.addEventListener('click', () => {
+      if (carrinho.length === 0) return alert('Carrinho vazio!');
+      alert('Compra finalizada! Obrigado por comprar na StarPop 💫');
+      carrinho = [];
+      salvarCarrinho();
+    });
+  </script>

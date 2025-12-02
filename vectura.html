@@ -1,0 +1,429 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loja Completa</title>
+  <style>
+    :root {
+      --primary: #8a0c0c;
+      --bg: #000;
+      --card: #fff;
+      --muted: #000;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Inter, system-ui, Arial;
+      margin: 0;
+      background: var(--bg);
+      color: #fff;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: linear-gradient(90deg, #800505, #000);
+      flex-wrap: wrap;
+    }
+
+    .logo { height: 100px; }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-grow: 1;
+      justify-content: center;
+      max-width: 500px;
+    }
+
+    .search-container input {
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid #661717;
+      width: 100%;
+    }
+
+    .search-container button {
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      background: #8a0c0c;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #fff;
+    }
+
+    .menu-bar {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      background: #ffffff;
+      padding: 12px 0;
+      border-bottom: 4px solid #6b0808;
+    }
+
+    .menu-bar a {
+      color: #9b1818;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .menu-bar a:hover { color: #ff6666; }
+
+    .banner {
+      width: 100%;
+      height: 410px;
+      background: img="" center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    main {
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      color: #000;
+    }
+
+    .card img {
+      height: 230px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .price { font-weight: 700; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* ===== Carrinho ===== */
+    .cart-side {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      width: 360px;
+      background: var(--card);
+      color: #000;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+      transform: translateX(110%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .cart-side.open { transform: translateX(0); }
+
+    .cart-header {
+      padding: 18px;
+      border-bottom: 1px solid #000;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cart-body {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #000;
+    }
+
+    .cart-item img {
+      width: 60px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    footer {
+      padding: 18px;
+      text-align: center;
+      color: #aaa;
+    }
+
+    /* ===== Modal Login/Cadastro ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      color: #000;
+      padding: 24px;
+      border-radius: 10px;
+      width: 320px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 14px;
+    }
+
+    .tabs button {
+      flex: 1;
+      background: #ddd;
+      border-radius: 0;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .tabs button.active { background: #8a0c0c; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="starr.png" class="logo" alt="Logo da Loja" />
+    <form class="search-container" id="searchForm">
+      <input type="text" id="searchInput" placeholder="O que você está buscando?" />
+      <button type="submit">🔍</button>
+    </form>
+    <nav>
+      <button id="open-auth" class="ghost">Entrar / Cadastrar</button>
+      <button id="open-cart" aria-label="Abrir carrinho">🛒</button>
+    </nav>
+  </header>
+
+  <div class="menu-bar">
+    <a href="#vectura.html">Início</a>
+    <a href="Cantores.html">Cantores</a>
+    <a href="contato.html">Contato</a>
+    <a href="sobre.html">Sobre</a>
+  </div>
+
+  <div class="banner"> <img src="banner1.png" alt="40px"></div>
+<br></br>
+<center>
+<h2> 𝘋𝘦𝘴𝘵𝘢𝘲𝘶𝘦𝘴 𝘥𝘢 𝘯𝘰𝘴𝘴𝘢 𝘭𝘰𝘫𝘢  </h2>
+</center>
+  <main>
+    <div id="results"></div>
+    <section class="grid" id="products"></section>
+  </main>
+
+  <aside id="cart" class="cart-side">
+    <div class="cart-header">
+      <strong>Carrinho</strong>
+      <button id="close-cart">Fechar</button>
+    </div>
+    <div class="cart-body" id="cart-items"></div>
+    <div style="padding:16px;border-top:1px solid #000">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span>Total:</span> <strong id="cart-total">R$ 0,00</strong>
+      </div>
+      <button id="checkout-btn" style="width:100%">Finalizar Compra</button>
+    </div>
+  </aside>
+
+  <!-- Modal Login -->
+  <div class="overlay" id="auth">
+    <div class="modal">
+      <div class="tabs">
+        <button id="tab-login" class="active">Entrar</button>
+        <button id="tab-register">Cadastrar</button>
+      </div>
+      <div id="login-form">
+        <input id="login-email" type="email" placeholder="Email" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="login-pass" type="password" placeholder="Senha" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <button id="btn-login" style="width:100%">Entrar</button>
+      </div>
+      <div id="register-form" style="display:none">
+        <input id="reg-name" placeholder="Nome" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="reg-email" type="email" placeholder="Email" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <input id="reg-pass" type="password" placeholder="Senha" style="width:100%;margin-bottom:8px;padding:8px;" />
+        <button id="btn-register" style="width:100%">Cadastrar</button>
+      </div>
+      <button id="close-auth" class="ghost" style="margin-top:10px;width:100%">Fechar</button>
+    </div>
+  </div>
+
+  <footer>© StarPop - 2025. Todos os direitos reservados.</footer>
+
+  <script>
+    // === LISTA DE PRODUTOS PERSONALIZÁVEL ===
+    const PRODUCTS = [
+      { id: 1, title: 'Camiseta Jão Especial de Natal', price: 89.9, src:'jao.jpg' },
+      { id: 2, title: 'Moletom Billie Eilish', price: 199.9, src: 'billie1.jpg' },
+      { id: 3, title: 'Camiseta Lana Del Rey', price: 89.9, src: 'lana4.jpg' },
+      { id: 4, title: 'Regata Lady Gaga', price: 59.9, src: 'gaga2.jpg' },
+      { id: 5, title: 'Camiseta Sabrina Capenter', price: 89.9, src: 'sabrina2.jpg' },
+      { id: 6, title: 'Camiseta Justin Bieber', price: 89.9, src: 'justin.png' },
+      { id: 7, title: 'Cropped Taylor Swift', price: 79.9, src: 'taylor2.jpg' },
+      { id: 8, title: 'Camiseta Travis Scott', price: 89.9, src: 'travis.png' },
+      { id: 9, title: 'Camiseta Jão Super ', price: 89.9, src: 'jao3.jpg' },
+      { id: 10, title: 'Moletom Lady gaga', price: 199.9, src: 'gaga1.jpg' },
+      { id: 10, title: 'Cropped Billie Eilish', price: 79.9, src: 'billie.jpg' },
+      { id: 10, title: 'Moletom Lana Del Rey', price: 199.9, src: 'lana1.jpg' },
+      // 👉 adicione mais produtos seguindo o mesmo formato
+    ];
+  
+    const q = s => document.querySelector(s);
+    const formatR = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+  
+    const productsEl = q('#products');
+    function renderProducts(){
+      productsEl.innerHTML = PRODUCTS.map(p=>`
+        <article class="card">
+          <img src="${p.src}" alt="${p.title}" />
+          <div style="margin-top:10px;font-weight:800">${p.title}</div>
+          <div class="meta">
+            <div class="price">${formatR(p.price)}</div>
+            <div class="small">Em estoque</div>
+          </div>
+          <div class="actions">
+            <button data-id="${p.id}" class="add">Adicionar ao carrinho</button>
+            <button class="ghost">Ver</button>
+          </div>
+        </article>`).join('');
+    }
+  
+    // ==== CARRINHO ====
+    const CART_KEY = 'demo_cart_v2';
+    let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+    function addToCart(id){
+      const p = PRODUCTS.find(x=>x.id===+id);
+      if(!p) return;
+      if(cart[id]) cart[id].qty++;
+      else cart[id]={...p,qty:1};
+      saveCart();
+      cartSide.classList.add('open');
+    }
+    function removeFromCart(id){ delete cart[id]; saveCart(); }
+  
+    const cartSide = q('#cart'), cartItemsEl = q('#cart-items'), cartTotalEl = q('#cart-total');
+    function updateCartUI(){
+      const items = Object.values(cart);
+      cartItemsEl.innerHTML = items.length
+        ? items.map(it=>`
+          <div class="cart-item" data-id="${it.id}">
+            <img src="${it.src}" alt="${it.title}"/>
+            <div style="flex:1">
+              <div style="font-weight:600">${it.title}</div>
+              <div>${formatR(it.price)} x ${it.qty}</div>
+            </div>
+            <button data-id="${it.id}" class="ghost rm">Remover</button>
+          </div>`).join('')
+        : '<div style="text-align:center;color:#555">Seu carrinho está vazio.</div>';
+      const total = items.reduce((s,i)=>s + i.price * i.qty, 0);
+      cartTotalEl.textContent = formatR(total);
+      cartItemsEl.querySelectorAll('.rm').forEach(b=>b.onclick=e=>removeFromCart(e.target.dataset.id));
+    }
+  
+    q('#products').onclick=e=>{ if(e.target.matches('.add')) addToCart(e.target.dataset.id); };
+    q('#open-cart').onclick=()=>cartSide.classList.add('open');
+    q('#close-cart').onclick=()=>cartSide.classList.remove('open');
+    q('#checkout-btn').onclick=()=>{ if(Object.keys(cart).length===0){ alert('Carrinho vazio.'); return; } cart={}; saveCart(); alert('Compra finalizada!'); cartSide.classList.remove('open'); };
+  
+    // ==== LOGIN / CADASTRO ====
+    const overlay = q('#auth');
+    const usersKey = 'demo_users';
+    const getUsers = () => JSON.parse(localStorage.getItem(usersKey)||'{}');
+    const saveUsers = u => localStorage.setItem(usersKey, JSON.stringify(u));
+  
+    q('#open-auth').onclick=()=>overlay.classList.add('open');
+    q('#close-auth').onclick=()=>overlay.classList.remove('open');
+  
+    const tabLogin=q('#tab-login'),tabRegister=q('#tab-register'),loginForm=q('#login-form'),regForm=q('#register-form');
+    tabLogin.onclick=()=>{tabLogin.classList.add('active');tabRegister.classList.remove('active');loginForm.style.display='block';regForm.style.display='none';};
+    tabRegister.onclick=()=>{tabRegister.classList.add('active');tabLogin.classList.remove('active');loginForm.style.display='none';regForm.style.display='block';};
+  
+    q('#btn-register').onclick=()=>{
+      const name=q('#reg-name').value.trim(),email=q('#reg-email').value.trim(),pass=q('#reg-pass').value;
+      if(!name||!email||!pass) return alert('Preencha todos os campos!');
+      const users=getUsers();
+      if(users[email]) return alert('Email já cadastrado!');
+      users[email]={name,pass};
+      saveUsers(users);
+      alert('Cadastro realizado!');
+      tabLogin.click();
+    };
+  
+    q('#btn-login').onclick=()=>{
+      const email=q('#login-email').value.trim(),pass=q('#login-pass').value;
+      const users=getUsers();
+      if(users[email]?.pass===pass){ alert(`Bem-vindo, ${users[email].name}!`); overlay.classList.remove('open'); }
+      else alert('Email ou senha incorretos.');
+    };
+  
+    renderProducts();
+    updateCartUI();
+  </script>
+  
+</body>
+</html>
